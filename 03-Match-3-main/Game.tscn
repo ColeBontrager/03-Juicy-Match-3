@@ -1,0 +1,160 @@
+[gd_scene load_steps=16 format=2]
+
+[ext_resource path="res://Grid/grid.gd" type="Script" id=1]
+[ext_resource path="res://Pieces/Piece Background.tscn" type="PackedScene" id=2]
+[ext_resource path="res://UI/HUD.gd" type="Script" id=3]
+[ext_resource path="res://Camera.gd" type="Script" id=4]
+[ext_resource path="res://back.jpeg" type="Texture" id=5]
+[ext_resource path="res://diamond.png" type="Texture" id=6]
+[ext_resource path="res://BarcadeNoBar-mzD9.otf" type="DynamicFontData" id=7]
+[ext_resource path="res://music.ogg" type="AudioStream" id=8]
+[ext_resource path="res://selectsound.wav" type="AudioStream" id=9]
+[ext_resource path="res://movesound.wav" type="AudioStream" id=10]
+[ext_resource path="res://matchsound.wav" type="AudioStream" id=11]
+[ext_resource path="res://UI/Instructions.gd" type="Script" id=12]
+
+[sub_resource type="DynamicFont" id=1]
+size = 50
+font_data = ExtResource( 7 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 60
+font_data = ExtResource( 7 )
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends AudioStreamPlayer2D
+
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = \"text\"
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+"
+
+[node name="Game" type="Node2D"]
+
+[node name="Background" type="Sprite" parent="."]
+position = Vector2( -25, -25 )
+scale = Vector2( 0.7, 0.7 )
+texture = ExtResource( 5 )
+centered = false
+
+[node name="grid" type="Node2D" parent="."]
+script = ExtResource( 1 )
+width = 4
+height = 5
+xStart = 96
+yStart = 832
+offset = 128
+background = ExtResource( 2 )
+
+[node name="HUD" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Diamond" type="Sprite" parent="HUD"]
+scale = Vector2( 0.05, 0.05 )
+texture = ExtResource( 6 )
+centered = false
+
+[node name="Score" type="Label" parent="HUD"]
+margin_left = 81.0
+margin_top = 8.0
+margin_right = 666.0
+margin_bottom = 62.0
+custom_fonts/font = SubResource( 1 )
+text = "00"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Time" type="Label" parent="HUD"]
+margin_left = 81.0
+margin_top = 8.0
+margin_right = 560.0
+margin_bottom = 63.0
+custom_fonts/font = SubResource( 1 )
+text = "Time:"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Timer" type="Timer" parent="HUD"]
+autostart = true
+
+[node name="Instructions" type="Control" parent="HUD"]
+pause_mode = 2
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 12 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="HUD/Instructions"]
+margin_right = 576.0
+margin_bottom = 1024.0
+color = Color( 0.0156863, 0.0117647, 0.635294, 0.796078 )
+
+[node name="Label" type="Label" parent="HUD/Instructions"]
+margin_top = -171.0
+margin_right = 576.0
+margin_bottom = 1024.0
+custom_fonts/font = SubResource( 3 )
+text = "Level 1
+
+How many points can you score in 60 seconds?"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="CountdownLabel" type="Label" parent="HUD/Instructions"]
+margin_top = 748.0
+margin_right = 576.0
+margin_bottom = 1024.0
+custom_fonts/font = SubResource( 3 )
+text = "Starting In:"
+align = 1
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Timer" type="Timer" parent="HUD/Instructions"]
+autostart = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+current = true
+script = ExtResource( 4 )
+
+[node name="Music" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 8 )
+autoplay = true
+script = SubResource( 2 )
+
+[node name="Select" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 9 )
+
+[node name="Match" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 11 )
+
+[node name="Move" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 10 )
+
+[connection signal="timeout" from="HUD/Timer" to="HUD" method="_on_Timer_timeout"]
+[connection signal="timeout" from="HUD/Instructions/Timer" to="HUD/Instructions" method="_on_Timer_timeout"]
